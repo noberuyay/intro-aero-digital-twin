@@ -1,6 +1,6 @@
 # Stage 4 Starter Specification: Live Cm–Alpha Relationship and Trim
 
-Student name: `[YOUR NAME]`
+Student name: `[RAKTHEERA]`
 
 Complete only the boxes marked **STUDENT COMPLETES**. The instructor-provided engineering scope and the implementation contract must not be edited. When the specification is complete and approved, attach this one file to ChatGPT.
 
