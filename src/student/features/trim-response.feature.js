@@ -70,15 +70,55 @@ function validateAircraft(aircraft) {
   }
 }
 
+function buildPlotPoints(aircraft) {
+  const points = [];
+
+  for (
+    let angleDeg = -10;
+    angleDeg <= 10;
+    angleDeg += 1
+  ) {
+    points.push({
+      x: angleDeg,
+      y: calculateCm(
+        aircraft.cm0,
+        aircraft.cmAlphaPerRad,
+        angleDeg
+      )
+    });
+  }
+
+  if (
+    aircraft.angleOfAttackDeg < -10 ||
+    aircraft.angleOfAttackDeg > 10
+  ) {
+    points.push({
+      x: aircraft.angleOfAttackDeg,
+      y: calculateCm(
+        aircraft.cm0,
+        aircraft.cmAlphaPerRad,
+        aircraft.angleOfAttackDeg
+      )
+    });
+  }
+
+  return points;
+}
+
 function buildPlot(aircraft, includePoints = true) {
   return {
     id: "cm-alpha",
     title: "Cm-alpha relationship",
     xLabel: "Angle of attack (deg)",
     yLabel: "Pitching-moment coefficient",
-    points: includePoints
-      ? buildPlotPoints(aircraft)
-      : [],
+    series: [
+      {
+        label: "Cm(alpha)",
+        points: includePoints
+          ? buildPlotPoints(aircraft)
+          : []
+      }
+    ],
     regions: [],
     referenceLines: [
       {
@@ -118,41 +158,6 @@ function unavailableAnalysis(aircraft) {
 
     scene: null
   };
-}
-
-function buildPlotPoints(aircraft) {
-  const points = [];
-
-  for (
-    let angleDeg = -10;
-    angleDeg <= 10;
-    angleDeg += 1
-  ) {
-    points.push({
-      x: angleDeg,
-      y: calculateCm(
-        aircraft.cm0,
-        aircraft.cmAlphaPerRad,
-        angleDeg
-      )
-    });
-  }
-
-  if (
-    aircraft.angleOfAttackDeg < -10 ||
-    aircraft.angleOfAttackDeg > 10
-  ) {
-    points.push({
-      x: aircraft.angleOfAttackDeg,
-      y: calculateCm(
-        aircraft.cm0,
-        aircraft.cmAlphaPerRad,
-        aircraft.angleOfAttackDeg
-      )
-    });
-  }
-
-  return points;
 }
 
 function buildVerificationCases() {
@@ -388,72 +393,51 @@ export const feature = {
       results: [
         {
           key: "cm",
-
           label: "Cm(alpha)",
-
           value: response.cm,
-
           unit: "",
-
           precision: 6,
-
           emphasis: true
         },
 
         {
           key: "trimAngleDeg",
-
           label: "Trim angle",
-
           value:
             response.trimAngleDeg === null
               ? "not available"
               : response.trimAngleDeg,
-
           unit:
             response.trimAngleDeg === null
               ? ""
               : "deg",
-
           precision: 6
         },
 
         {
           key: "deltaCm",
-
           label: "delta_Cm",
-
           value: response.deltaCm,
-
           unit: "",
-
           precision: 6
         },
 
         {
           key: "trimmed",
-
           label: "Selected condition",
-
           value:
             response.trimmed
               ? "trimmed"
               : "not trimmed",
-
           unit: "",
-
           precision: 0
         },
 
         {
           key: "disturbanceTendency",
-
           label: "Disturbance tendency",
-
           value: response.tendency,
-
           unit: "",
-
           precision: 0
         }
       ],
