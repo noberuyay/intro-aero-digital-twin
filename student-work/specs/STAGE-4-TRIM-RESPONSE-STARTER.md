@@ -101,7 +101,7 @@ Before asking ChatGPT for code, complete each prediction in your own words.
 
 1. If `Cm_alpha < 0` and the angle-of-attack disturbance is positive, `delta_Cm` should be `negative` because `cm_alpha is negative`.
 2. If `Cm_alpha > 0` and the angle-of-attack disturbance is positive, the response should be `Nose up` because `cm_alpha is positive`.
-3. If `Cm_alpha = 0`, changing angle of attack should `not change Cm_alpha`.
+3. If `Cm_alpha = 0`, changing angle of attack should `not change Cm`.
 4. If `Cm0` is fixed and the magnitude of a nonzero `Cm_alpha` increases, the trim angle magnitude should `decrease`.
 5. Doubling `disturbanceAlphaDeg` while holding `Cm_alpha` fixed should `double delta cm`.
 
@@ -145,7 +145,7 @@ Use your Section 8 reference calculation.
 
 ```Current pitching-moment coefficient is 6.68667*10^-5 which is more than 10^-6 meaning it is not trim
 The trim angle in radians is 0.05 rad
-Disturbance response Delta cm is -0.0279253 which is a restoring tendency from being negative
+Disturbance response Delta cm is -0.0279253 which has a restoring tendency from being negative
 The expected output must be negative to create a balancing nose down pitching-moment tendency since alpha > 0 generates a destabilizing nose up moment
 ```
 
@@ -154,7 +154,7 @@ The expected output must be negative to create a balancing nose down pitching-mo
 Change one input and state the exact trend or sign that must result.
 
 ```Change input of cm_alpha from -0.8 to 1 
-Current pitching-moment coefficient is -0.00991642 which is less than 10^-6 meaning it is not trim and is nose down
+Current pitching-moment coefficient is 0.08991642 which is more than 10^-6 meaning it is not trim
 The trim angle in radians is -0.04 rad 
 Disturbance tendency is 0.00121847 which has a destabilizing tendency from being positive 
 The expected output is correct since it has to be positive to create a balancing nose down pitching-moment tendency since alpha < 0 generates a destabilizing nose down moment
@@ -165,7 +165,7 @@ The expected output is correct since it has to be positive to create a balancing
 Use an informative boundary such as zero slope, zero disturbance, or the trim condition. State the exact behavior expected and why division by zero or a false physical claim must not occur.
 
 ```Division by zero must not occur because it could not be calculated and the linear model becomes invalid
-When Cm_alpha=0
+When Cm_alpha = 0
 Cm(alpha) = Cm0
 delta_Cm = 0
 alpha_trim_rad = not available
