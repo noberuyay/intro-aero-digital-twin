@@ -37,6 +37,7 @@ export function calculateTrimAngleRad(cm0, cmAlphaPerRad) {
   requireFiniteNumber(cm0, "cm0");
   requireFiniteNumber(cmAlphaPerRad, "cmAlphaPerRad");
 
+  // Cm-alpha = 0 has no unique trim angle.
   if (cmAlphaPerRad === 0) {
     return null;
   }
@@ -47,7 +48,10 @@ export function calculateTrimAngleRad(cm0, cmAlphaPerRad) {
 }
 
 export function calculateTrimAngleDeg(cm0, cmAlphaPerRad) {
-  const trimAngleRad = calculateTrimAngleRad(cm0, cmAlphaPerRad);
+  const trimAngleRad = calculateTrimAngleRad(
+    cm0,
+    cmAlphaPerRad
+  );
 
   if (trimAngleRad === null) {
     return null;
@@ -56,11 +60,17 @@ export function calculateTrimAngleDeg(cm0, cmAlphaPerRad) {
   return radiansToDegrees(trimAngleRad);
 }
 
-export function calculateDeltaCm(cmAlphaPerRad, disturbanceAlphaDeg) {
+export function calculateDeltaCm(
+  cmAlphaPerRad,
+  disturbanceAlphaDeg
+) {
   requireFiniteNumber(cmAlphaPerRad, "cmAlphaPerRad");
 
-  const disturbanceAlphaRad = degreesToRadians(disturbanceAlphaDeg);
-  const deltaCm = cmAlphaPerRad * disturbanceAlphaRad;
+  const disturbanceAlphaRad =
+    degreesToRadians(disturbanceAlphaDeg);
+
+  const deltaCm =
+    cmAlphaPerRad * disturbanceAlphaRad;
 
   return deltaCm === 0 ? 0 : deltaCm;
 }
@@ -69,18 +79,24 @@ export function calculateDisturbanceProduct(
   cmAlphaPerRad,
   disturbanceAlphaDeg
 ) {
-  const disturbanceAlphaRad = degreesToRadians(disturbanceAlphaDeg);
+  const disturbanceAlphaRad =
+    degreesToRadians(disturbanceAlphaDeg);
+
   const deltaCm = calculateDeltaCm(
     cmAlphaPerRad,
     disturbanceAlphaDeg
   );
 
-  const product = disturbanceAlphaRad * deltaCm;
+  const product =
+    disturbanceAlphaRad * deltaCm;
 
   return product === 0 ? 0 : product;
 }
 
-export function classifyDisturbance(cmAlphaPerRad, disturbanceAlphaDeg) {
+export function classifyDisturbance(
+  cmAlphaPerRad,
+  disturbanceAlphaDeg
+) {
   const product = calculateDisturbanceProduct(
     cmAlphaPerRad,
     disturbanceAlphaDeg
@@ -99,6 +115,7 @@ export function classifyDisturbance(cmAlphaPerRad, disturbanceAlphaDeg) {
 
 export function isTrimmed(cm) {
   requireFiniteNumber(cm, "cm");
+
   return Math.abs(cm) <= TRIM_TOLERANCE;
 }
 
@@ -114,24 +131,36 @@ export function calculateTrimResponse(aircraft) {
     disturbanceAlphaDeg
   } = aircraft;
 
-  const alphaRad = degreesToRadians(angleOfAttackDeg);
-  const disturbanceAlphaRad = degreesToRadians(disturbanceAlphaDeg);
+  const alphaRad =
+    degreesToRadians(angleOfAttackDeg);
+
+  const disturbanceAlphaRad =
+    degreesToRadians(disturbanceAlphaDeg);
+
   const cm = calculateCm(
     cm0,
     cmAlphaPerRad,
     angleOfAttackDeg
   );
-  const trimAngleRad = calculateTrimAngleRad(
-    cm0,
-    cmAlphaPerRad
-  );
-  const trimAngleDeg = trimAngleRad === null
-    ? null
-    : radiansToDegrees(trimAngleRad);
-  const deltaCm = calculateDeltaCm(
-    cmAlphaPerRad,
-    disturbanceAlphaDeg
-  );
+
+  const trimAngleRad =
+    calculateTrimAngleRad(
+      cm0,
+      cmAlphaPerRad
+    );
+
+  const trimAngleDeg =
+    calculateTrimAngleDeg(
+      cm0,
+      cmAlphaPerRad
+    );
+
+  const deltaCm =
+    calculateDeltaCm(
+      cmAlphaPerRad,
+      disturbanceAlphaDeg
+    );
+
   const disturbanceProduct =
     calculateDisturbanceProduct(
       cmAlphaPerRad,

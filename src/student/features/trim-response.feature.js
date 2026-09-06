@@ -9,26 +9,40 @@ const REQUIRED_CAPABILITY = {
 };
 
 function hasRequiredCapability(capabilityContext) {
-  const capabilities = capabilityContext?.capabilities;
+  if (!capabilityContext) {
+    return false;
+  }
 
-  if (Array.isArray(capabilities)) {
-    return capabilities.some((capability) => (
+  const capabilitySource =
+    capabilityContext.capabilities ??
+    capabilityContext;
+
+  if (Array.isArray(capabilitySource)) {
+    return capabilitySource.some((capability) => (
       capability &&
       capability.id === REQUIRED_CAPABILITY.id &&
       Number(capability.version) >= REQUIRED_CAPABILITY.version
     ));
   }
 
-  if (capabilities && typeof capabilities === "object") {
-    const capability = capabilities[REQUIRED_CAPABILITY.id];
+  if (
+    capabilitySource &&
+    typeof capabilitySource === "object"
+  ) {
+    const capability =
+      capabilitySource[REQUIRED_CAPABILITY.id];
 
     if (typeof capability === "number") {
-      return capability >= REQUIRED_CAPABILITY.version;
+      return (
+        capability >=
+        REQUIRED_CAPABILITY.version
+      );
     }
 
     return Boolean(
       capability &&
-      Number(capability.version) >= REQUIRED_CAPABILITY.version
+      Number(capability.version) >=
+        REQUIRED_CAPABILITY.version
     );
   }
 
@@ -50,9 +64,35 @@ function validateAircraft(aircraft) {
       typeof aircraft[key] !== "number" ||
       !Number.isFinite(aircraft[key])
     ) {
-      throw new TypeError(`${key} must be a finite number`);
+      throw new TypeError(
+        `${key} must be a finite number`
+      );
     }
   }
+}
+
+function unavailableAnalysis() {
+  return {
+    results: [
+      {
+        key: "analysisStatus",
+        label: "Analysis",
+        value: "Analysis unavailable",
+        unit: "",
+        precision: 0,
+        emphasis: true
+      }
+    ],
+    verificationCases: [],
+    decision: {
+      question:
+        "At the selected angle of attack, is the simplified pitching-moment model trimmed, and does a small angle-of-attack disturbance create a restoring moment tendency?",
+      interpretation: "Analysis unavailable",
+      status: "neutral"
+    },
+    plots: [],
+    scene: null
+  };
 }
 
 function buildPlotPoints(aircraft) {
@@ -138,15 +178,29 @@ function buildVerificationCases() {
     }
   };
 
-  const numerical = calculateTrimResponse(numericalCase.inputs);
-  const behavioral = calculateTrimResponse(behavioralCase.inputs);
-  const boundary = calculateTrimResponse(boundaryCase.inputs);
+  const numerical =
+    calculateTrimResponse(
+      numericalCase.inputs
+    );
+
+  const behavioral =
+    calculateTrimResponse(
+      behavioralCase.inputs
+    );
+
+  const boundary =
+    calculateTrimResponse(
+      boundaryCase.inputs
+    );
 
   return [
     {
       ...numericalCase,
       passed:
-        Math.abs(numerical.cm - numericalCase.expected.cm) <= 1e-9 &&
+        Math.abs(
+          numerical.cm -
+          numericalCase.expected.cm
+        ) <= 1e-9 &&
         Math.abs(
           numerical.trimAngleRad -
           numericalCase.expected.trimAngleRad
@@ -155,8 +209,10 @@ function buildVerificationCases() {
           numerical.deltaCm -
           numericalCase.expected.deltaCm
         ) <= 1e-7 &&
-        numerical.trimmed === numericalCase.expected.trimmed &&
-        numerical.tendency === numericalCase.expected.tendency
+        numerical.trimmed ===
+          numericalCase.expected.trimmed &&
+        numerical.tendency ===
+          numericalCase.expected.tendency
     },
     {
       ...behavioralCase,
@@ -177,8 +233,10 @@ function buildVerificationCases() {
           behavioral.disturbanceProduct -
           behavioralCase.expected.disturbanceProduct
         ) <= 1e-7 &&
-        behavioral.trimmed === behavioralCase.expected.trimmed &&
-        behavioral.tendency === behavioralCase.expected.tendency
+        behavioral.trimmed ===
+          behavioralCase.expected.trimmed &&
+        behavioral.tendency ===
+          behavioralCase.expected.tendency
     },
     {
       ...boundaryCase,
@@ -206,36 +264,42 @@ export const feature = {
   category: "Stability · Student feature",
   learningMode: "concept",
   topicId: "stability",
+
   inputKeys: [
     "cm0",
     "cmAlphaPerRad",
     "angleOfAttackDeg",
     "disturbanceAlphaDeg"
   ],
+
   requiresCapabilities: [
     {
       id: "loads.pitch.component-sum",
       version: 1
     }
   ],
+
   providesCapabilities: [
     {
       id: "stability.pitch.cm-alpha",
       version: 1
     }
   ],
+
   assumptions: [
     "The Cm-alpha relationship is linear over the investigated range.",
     "The model is quasi-static and represents a small disturbance about the selected condition.",
     "Cm0 and Cm-alpha represent the same aircraft configuration and flight condition.",
     "Positive pitching moment and positive angle of attack are nose-up."
   ],
+
   validityLimits: [
     "Do not use the linear relationship at stall, at large angle of attack, or where aerodynamic coefficients are strongly nonlinear.",
     "The model does not calculate a time history, damping, control motion, or handling quality.",
     "A restoring tendency is not proof of acceptable safety, controllability, or flightworthiness.",
     "The calculated trim angle is meaningful only when the linear model remains valid at that angle."
   ],
+
   simulation: {
     display: "analysis-only",
     durationS: 1,
@@ -247,14 +311,17 @@ export const feature = {
   analyze(aircraft, capabilityContext) {
     validateAircraft(aircraft);
 
+    // The installed feature remains renderable when its required
+    // earlier-stage capability is unavailable.
     if (!hasRequiredCapability(capabilityContext)) {
-      throw new Error(
-        "Required capability loads.pitch.component-sum version 1 is not available."
-      );
+      return unavailableAnalysis();
     }
 
-    const response = calculateTrimResponse(aircraft);
-    const verificationCases = buildVerificationCases();
+    const response =
+      calculateTrimResponse(aircraft);
+
+    const verificationCases =
+      buildVerificationCases();
 
     const interpretation = response.trimmed
       ? `The selected condition is trimmed within the 1e-6 Cm tolerance. A ${response.tendency} disturbance tendency is predicted by the linear quasi-static model.`
@@ -273,8 +340,14 @@ export const feature = {
         {
           key: "trimAngleDeg",
           label: "Trim angle",
-          value: response.trimAngleDeg ?? "not available",
-          unit: response.trimAngleDeg === null ? "" : "deg",
+          value:
+            response.trimAngleDeg === null
+              ? "not available"
+              : response.trimAngleDeg,
+          unit:
+            response.trimAngleDeg === null
+              ? ""
+              : "deg",
           precision: 6
         },
         {
@@ -301,31 +374,38 @@ export const feature = {
           precision: 0
         }
       ],
+
       verificationCases,
+
       decision: {
         question:
           "At the selected angle of attack, is the simplified pitching-moment model trimmed, and does a small angle-of-attack disturbance create a restoring moment tendency?",
         interpretation,
-        status: response.trimmed
-          ? response.tendency === "restoring"
+        status:
+          response.trimmed &&
+          response.tendency === "restoring"
             ? "pass"
             : "caution"
-          : "caution"
       },
+
       plots: [
         {
           id: "cm-alpha",
           title: "Cm-alpha relationship",
+
           xAxis: {
             label: "Angle of attack",
             unit: "deg"
           },
+
           yAxis: {
             label: "Pitching-moment coefficient",
             unit: ""
           },
+
           points: buildPlotPoints(aircraft),
           regions: [],
+
           referenceLines: [
             {
               value: 0,
@@ -335,6 +415,7 @@ export const feature = {
           ]
         }
       ],
+
       scene: null
     };
   }
@@ -344,27 +425,45 @@ export const model = {
   kind: "derived",
 
   evaluate(runtimeContext) {
-    const aircraft = runtimeContext?.aircraft;
+    const aircraft =
+      runtimeContext?.aircraft;
 
     validateAircraft(aircraft);
 
     if (!hasRequiredCapability(runtimeContext)) {
-      throw new Error(
-        "Required capability loads.pitch.component-sum version 1 is not available."
-      );
+      return {
+        values: {
+          analysisStatus: "Analysis unavailable"
+        }
+      };
     }
 
-    const response = calculateTrimResponse(aircraft);
+    const response =
+      calculateTrimResponse(aircraft);
 
     return {
       values: {
         cm: response.cm,
-        trimAngleRad: response.trimAngleRad,
-        trimAngleDeg: response.trimAngleDeg,
+
+        trimAngleRad:
+          response.trimAngleRad === null
+            ? "not available"
+            : response.trimAngleRad,
+
+        trimAngleDeg:
+          response.trimAngleDeg === null
+            ? "not available"
+            : response.trimAngleDeg,
+
         deltaCm: response.deltaCm,
-        disturbanceProduct: response.disturbanceProduct,
+
+        disturbanceProduct:
+          response.disturbanceProduct,
+
         trimmed: response.trimmed,
-        disturbanceTendency: response.tendency
+
+        disturbanceTendency:
+          response.tendency
       }
     };
   }
