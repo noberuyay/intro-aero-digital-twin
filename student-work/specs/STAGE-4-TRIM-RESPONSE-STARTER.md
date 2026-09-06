@@ -117,22 +117,22 @@ alpha = 2.86 deg
 delta_alpha = +2.00 deg
 
 Angle conversion:
-alpha_rad = 2.86 * pi/180
-delta_alpha_rad = 2.86 * pi/180
+alpha_rad = 2.86 * pi/180 = 0.04991642 rad
+delta_alpha_rad = 2.00 * pi/180 = 0.0349066 rad
 
 Current pitching-moment coefficient:
-Cm(alpha) = 0.04 - 0.8 * (2.86 * pi/180)
+Cm(alpha) = 0.04 - 0.8 * (2.86 * pi/180) = 6.68667*10^-5 
 
 Trim angle:
-alpha_trim_rad = -0.04/-0.8
-alpha_trim_deg = -0.04/-0.8*(180/pi)
+alpha_trim_rad = -0.04/-0.8 = 0.05 rad
+alpha_trim_deg = -0.04/-0.8*(180/pi) = 0.000872665
 
 Disturbance response:
-delta_Cm = -0.8*(2.86 * pi/180)
+delta_Cm = -0.8*(2.00 * pi/180) = -0.0279253
 
 Expected classifications:
-selected condition = [trimmed / not trimmed]
-disturbance tendency = [restoring / neutral / destabilizing]
+selected condition = not trimmed
+disturbance tendency = restoring
 ```
 
 ## 9. Verification Cases — STUDENT COMPLETES
@@ -143,24 +143,29 @@ Define all three cases before implementation. Include exact inputs, expected out
 
 Use your Section 8 reference calculation.
 
-```text
-[COMPLETE]
+```Current pitching-moment coefficient is 6.68667*10^-5 which is more than 10^-6 meaning it is not trim
+The trim angle in radians is 0.05 rad
+Disturbance response Delta cm is -0.0279253 which is a restoring tendency from being negative
+The expected output must be negative to create a balancing nose down force since alpha > 0 generates a destabilizing nose up moment
 ```
 
 ### 9.2 Behavioral case
 
 Change one input and state the exact trend or sign that must result.
 
-```text
-[COMPLETE]
+```Change input of cm_alpha to 1 1/rad 
+Current pitching-moment coefficient is -0.00991642 which is less than 10^-6 meaning it is not trim and is nose down
+Alpha trim angle is -0.04 rad 
+Delta cm is 2 rad
+Disturbance tendency is 0.00121847 which has a destabilizing tendency from being positive 
+The expected output is correct since it has to be positive to create a balancing nose down force since alpha < 0 generates a destabilizing nose down moment
 ```
 
 ### 9.3 Boundary or sanity case
 
 Use an informative boundary such as zero slope, zero disturbance, or the trim condition. State the exact behavior expected and why division by zero or a false physical claim must not occur.
 
-```text
-[COMPLETE]
+```Division by zero must not occur because it could not be calculated and the linear model becomes invalid
 ```
 
 ## 10. Feature Requirements
@@ -195,8 +200,7 @@ Do not modify any existing file.
 
 In one or two sentences, state what decision the completed feature will support and what it cannot establish.
 
-```text
-[COMPLETE]
+```Determines the trim angle, pitching-moment coefficient, disturbance tendency and whether the condition is trimmed and its disturbance tendency. It cannot be used at large angle if attacks or establish the time history, damping, control motion, or handling quality.
 ```
 
 ---
