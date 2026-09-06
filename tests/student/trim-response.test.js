@@ -67,9 +67,20 @@ describe("trim-response physics", () => {
   });
 
   test("invalid numeric inputs are rejected", () => {
-    expect(() => calculateCm(0.04, -0.8, Number.NaN)).toThrow();
-    expect(() => calculateCm(0.04, Infinity, 2.86)).toThrow();
-    expect(() => calculateTrimAngleRad(0.04, Number.NaN)).toThrow();
-    expect(() => calculateDeltaCm(-0.8, Infinity)).toThrow();
+    expect(() =>
+      calculateCm(0.04, -0.8, Number.NaN)
+    ).toThrow();
+
+    expect(() =>
+      calculateCm(0.04, Infinity, 2.86)
+    ).toThrow();
+
+    expect(() =>
+      calculateTrimAngleRad(0.04, Number.NaN)
+    ).toThrow();
+
+    expect(() =>
+      calculateDeltaCm(-0.8, Infinity)
+    ).toThrow();
   });
 });

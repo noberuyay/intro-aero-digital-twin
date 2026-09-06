@@ -28,7 +28,9 @@ export function calculateCm(cm0, cmAlphaPerRad, angleOfAttackDeg) {
   requireFiniteNumber(cmAlphaPerRad, "cmAlphaPerRad");
 
   const alphaRad = degreesToRadians(angleOfAttackDeg);
-  return cm0 + cmAlphaPerRad * alphaRad;
+  const cm = cm0 + cmAlphaPerRad * alphaRad;
+
+  return cm === 0 ? 0 : cm;
 }
 
 export function calculateTrimAngleRad(cm0, cmAlphaPerRad) {
@@ -39,7 +41,9 @@ export function calculateTrimAngleRad(cm0, cmAlphaPerRad) {
     return null;
   }
 
-  return -cm0 / cmAlphaPerRad;
+  const trimAngleRad = -cm0 / cmAlphaPerRad;
+
+  return trimAngleRad === 0 ? 0 : trimAngleRad;
 }
 
 export function calculateTrimAngleDeg(cm0, cmAlphaPerRad) {
@@ -56,7 +60,9 @@ export function calculateDeltaCm(cmAlphaPerRad, disturbanceAlphaDeg) {
   requireFiniteNumber(cmAlphaPerRad, "cmAlphaPerRad");
 
   const disturbanceAlphaRad = degreesToRadians(disturbanceAlphaDeg);
-  return cmAlphaPerRad * disturbanceAlphaRad;
+  const deltaCm = cmAlphaPerRad * disturbanceAlphaRad;
+
+  return deltaCm === 0 ? 0 : deltaCm;
 }
 
 export function calculateDisturbanceProduct(
@@ -69,7 +75,9 @@ export function calculateDisturbanceProduct(
     disturbanceAlphaDeg
   );
 
-  return disturbanceAlphaRad * deltaCm;
+  const product = disturbanceAlphaRad * deltaCm;
+
+  return product === 0 ? 0 : product;
 }
 
 export function classifyDisturbance(cmAlphaPerRad, disturbanceAlphaDeg) {
@@ -108,8 +116,15 @@ export function calculateTrimResponse(aircraft) {
 
   const alphaRad = degreesToRadians(angleOfAttackDeg);
   const disturbanceAlphaRad = degreesToRadians(disturbanceAlphaDeg);
-  const cm = calculateCm(cm0, cmAlphaPerRad, angleOfAttackDeg);
-  const trimAngleRad = calculateTrimAngleRad(cm0, cmAlphaPerRad);
+  const cm = calculateCm(
+    cm0,
+    cmAlphaPerRad,
+    angleOfAttackDeg
+  );
+  const trimAngleRad = calculateTrimAngleRad(
+    cm0,
+    cmAlphaPerRad
+  );
   const trimAngleDeg = trimAngleRad === null
     ? null
     : radiansToDegrees(trimAngleRad);
@@ -117,7 +132,11 @@ export function calculateTrimResponse(aircraft) {
     cmAlphaPerRad,
     disturbanceAlphaDeg
   );
-  const disturbanceProduct = disturbanceAlphaRad * deltaCm;
+  const disturbanceProduct =
+    calculateDisturbanceProduct(
+      cmAlphaPerRad,
+      disturbanceAlphaDeg
+    );
 
   return {
     alphaRad,

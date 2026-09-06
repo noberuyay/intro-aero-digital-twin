@@ -1,11 +1,5 @@
 import {
   calculateCm,
-  calculateTrimAngleRad,
-  calculateTrimAngleDeg,
-  calculateDeltaCm,
-  calculateDisturbanceProduct,
-  classifyDisturbance,
-  isTrimmed,
   calculateTrimResponse
 } from "../physics/trim-response.js";
 
@@ -52,7 +46,10 @@ function validateAircraft(aircraft) {
     "angleOfAttackDeg",
     "disturbanceAlphaDeg"
   ]) {
-    if (typeof aircraft[key] !== "number" || !Number.isFinite(aircraft[key])) {
+    if (
+      typeof aircraft[key] !== "number" ||
+      !Number.isFinite(aircraft[key])
+    ) {
       throw new TypeError(`${key} must be a finite number`);
     }
   }
@@ -151,25 +148,34 @@ function buildVerificationCases() {
       passed:
         Math.abs(numerical.cm - numericalCase.expected.cm) <= 1e-9 &&
         Math.abs(
-          numerical.trimAngleRad - numericalCase.expected.trimAngleRad
+          numerical.trimAngleRad -
+          numericalCase.expected.trimAngleRad
         ) <= 1e-12 &&
-        Math.abs(numerical.deltaCm - numericalCase.expected.deltaCm) <= 1e-7 &&
+        Math.abs(
+          numerical.deltaCm -
+          numericalCase.expected.deltaCm
+        ) <= 1e-7 &&
         numerical.trimmed === numericalCase.expected.trimmed &&
         numerical.tendency === numericalCase.expected.tendency
     },
     {
       ...behavioralCase,
       passed:
-        Math.abs(behavioral.cm - behavioralCase.expected.cm) <= 1e-8 &&
         Math.abs(
-          behavioral.trimAngleRad - behavioralCase.expected.trimAngleRad
+          behavioral.cm -
+          behavioralCase.expected.cm
+        ) <= 1e-8 &&
+        Math.abs(
+          behavioral.trimAngleRad -
+          behavioralCase.expected.trimAngleRad
         ) <= 1e-12 &&
         Math.abs(
-          behavioral.deltaCm - behavioralCase.expected.deltaCm
+          behavioral.deltaCm -
+          behavioralCase.expected.deltaCm
         ) <= 1e-7 &&
         Math.abs(
           behavioral.disturbanceProduct -
-            behavioralCase.expected.disturbanceProduct
+          behavioralCase.expected.disturbanceProduct
         ) <= 1e-7 &&
         behavioral.trimmed === behavioralCase.expected.trimmed &&
         behavioral.tendency === behavioralCase.expected.tendency
@@ -177,10 +183,16 @@ function buildVerificationCases() {
     {
       ...boundaryCase,
       passed:
-        Math.abs(boundary.cm - boundaryCase.expected.cm) <= 1e-12 &&
-        boundary.trimAngleRad === boundaryCase.expected.trimAngleRad &&
-        boundary.deltaCm === boundaryCase.expected.deltaCm &&
-        boundary.tendency === boundaryCase.expected.tendency
+        Math.abs(
+          boundary.cm -
+          boundaryCase.expected.cm
+        ) <= 1e-12 &&
+        boundary.trimAngleRad ===
+          boundaryCase.expected.trimAngleRad &&
+        boundary.deltaCm ===
+          boundaryCase.expected.deltaCm &&
+        boundary.tendency ===
+          boundaryCase.expected.tendency
     }
   ];
 }
@@ -275,7 +287,9 @@ export const feature = {
         {
           key: "trimmed",
           label: "Selected condition",
-          value: response.trimmed ? "trimmed" : "not trimmed",
+          value: response.trimmed
+            ? "trimmed"
+            : "not trimmed",
           unit: "",
           precision: 0
         },
