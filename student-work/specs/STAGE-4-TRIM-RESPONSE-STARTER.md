@@ -125,7 +125,7 @@ Cm(alpha) = 0.04 - 0.8 * (2.86 * pi/180) = 6.68667*10^-5
 
 Trim angle:
 alpha_trim_rad = -0.04/-0.8 = 0.05 rad
-alpha_trim_deg = -0.04/-0.8*(180/pi) = 0.000872665
+alpha_trim_deg = -0.04/-0.8*(180/pi) = 2.864789 deg
 
 Disturbance response:
 delta_Cm = -0.8*(2.00 * pi/180) = -0.0279253
@@ -146,19 +146,18 @@ Use your Section 8 reference calculation.
 ```Current pitching-moment coefficient is 6.68667*10^-5 which is more than 10^-6 meaning it is not trim
 The trim angle in radians is 0.05 rad
 Disturbance response Delta cm is -0.0279253 which is a restoring tendency from being negative
-The expected output must be negative to create a balancing nose down force since alpha > 0 generates a destabilizing nose up moment
+The expected output must be negative to create a balancing nose down pitching-moment tendency since alpha > 0 generates a destabilizing nose up moment
 ```
 
 ### 9.2 Behavioral case
 
 Change one input and state the exact trend or sign that must result.
 
-```Change input of cm_alpha to 1 1/rad 
+```Change input of cm_alpha from -0.8 to 1 
 Current pitching-moment coefficient is -0.00991642 which is less than 10^-6 meaning it is not trim and is nose down
-Alpha trim angle is -0.04 rad 
-Delta cm is 2 rad
+The trim angle in radians is -0.04 rad 
 Disturbance tendency is 0.00121847 which has a destabilizing tendency from being positive 
-The expected output is correct since it has to be positive to create a balancing nose down force since alpha < 0 generates a destabilizing nose down moment
+The expected output is correct since it has to be positive to create a balancing nose down pitching-moment tendency since alpha < 0 generates a destabilizing nose down moment
 ```
 
 ### 9.3 Boundary or sanity case
@@ -166,6 +165,11 @@ The expected output is correct since it has to be positive to create a balancing
 Use an informative boundary such as zero slope, zero disturbance, or the trim condition. State the exact behavior expected and why division by zero or a false physical claim must not occur.
 
 ```Division by zero must not occur because it could not be calculated and the linear model becomes invalid
+When Cm_alpha=0
+Cm(alpha) = Cm0
+delta_Cm = 0
+alpha_trim_rad = not available
+disturbance tendency = neutral
 ```
 
 ## 10. Feature Requirements
