@@ -146,7 +146,6 @@ Use your Section 8 reference calculation.
 ```Current pitching-moment coefficient is 6.68667*10^-5 which is more than 10^-6 meaning it is not trim
 The trim angle in radians is 0.05 rad
 Disturbance tendency is delta alpha rad * delta cm which is 0.0349066 * -0.0279253 = -0.0009748 which has a restoring tendency from being negative
-The expected output must be negative to create a balancing nose down pitching-moment tendency since alpha > 0 generates a destabilizing nose up moment
 ```
 
 ### 9.2 Behavioral case
@@ -157,7 +156,6 @@ Change one input and state the exact trend or sign that must result.
 Current pitching-moment coefficient is 0.08991642 which is more than 10^-6 meaning it is not trim
 The trim angle in radians is -0.04 rad 
 Disturbance tendency is delta alpha rad * delta cm which is 0.0349066 * 0.0349066 = 0.00121847 which has a destabilizing tendency from being positive 
-The expected output is correct since it has to be positive to create a balancing nose down pitching-moment tendency since alpha < 0 generates a destabilizing nose down moment
 ```
 
 ### 9.3 Boundary or sanity case
