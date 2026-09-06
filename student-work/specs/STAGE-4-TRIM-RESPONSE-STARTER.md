@@ -200,7 +200,7 @@ Do not modify any existing file.
 
 In one or two sentences, state what decision the completed feature will support and what it cannot establish.
 
-```Determines the trim angle, pitching-moment coefficient, disturbance tendency and whether the condition is trimmed and its disturbance tendency. It cannot be used at large angle if attacks or establish the time history, damping, control motion, or handling quality.
+```Determines the trim angle, pitching-moment coefficient, disturbance tendency and whether the condition is trimmed and its disturbance tendency. It cannot be used at large angle of attack or establish the time history, damping, control motion, or handling quality.
 ```
 
 ---
